@@ -10,6 +10,7 @@ let defaults = {
     sessionTime: 0,
     storedTime: 0,
     sessionPaused: 0,
+    sessionOnBreak: 0,
     breakTime: 0,
     counter: 0
 };
@@ -24,6 +25,8 @@ let break5 = document.querySelector(".b5");
 let break10 = document.querySelector(".b10");
 let break15 = document.querySelector(".b15");
 
+let choices = document.querySelector(".choices");
+
 let increaseSessionBtn = document.querySelector("#increase-session");
 let chooseSessionDuration = document.querySelector("#session-length-number");
 let decreaseSessionBtn = document.querySelector("#decrease-session");
@@ -34,7 +37,7 @@ let decreaseBreakBtn = document.querySelector("#decrease-break");
 chooseBreakDuration.innerHTML = "00:00";
 
 let sessionTimer = document.querySelector("#countdown-session");
-sessionTimer.innerHTML = defaults.sessionTime
+sessionTimer.innerHTML = "00:00";
 
 let controlBtnStart = document.querySelector("#start-button");
 let controlBtnPause = document.querySelector("#pause-button");
@@ -201,6 +204,8 @@ decreaseBreakTime = () => {
 }
 
 breakCountdown = (seconds) => {
+    defaults.sessionOnBreak = 1;
+    controlBtnResume.disabled = true;
     seconds = defaults.breakTime;
     const now = Date.now();
     const then = now + seconds * 1000;
@@ -221,8 +226,6 @@ breakCountdown = (seconds) => {
             return;
     }
 
-   
-
     // Displaying the countdown on the app
     displayBreakCountdown();
     console.log(secondsLeft);
@@ -242,52 +245,72 @@ resetSessions = () => {
     sessionCounter.innerHTML = `Sessions completed: ${defaults.counter}`;
 }
 
-
 // -- PRE CHOICES --
 sessionPreChoice20 = () => {
     defaults.sessionTime = 20;
+    // session20.style.backgroundColor = "#eee";
+    // session20.style.border = "solid 1px #ffa500";
+    // session30.style.backgroundColor = "#ddd"
+    // session30.style.remove.border;
+    highlightSession(session20);
     displayTime();
 }
 
 sessionPreChoice30 = () => {
     defaults.sessionTime = 30;
+    // session30.style.backgroundColor = "#eee";
+    // session30.style.border = "solid 1px #ffa500";
+    highlightSession(session30);
     displayTime();
 }
 
 sessionPreChoice45 = () => {
     defaults.sessionTime = 45;
+    highlightSession(session45);
     displayTime();
 }
 
 sessionBreak5 = () => {
     defaults.breakTime = 5;
+    highlightBreak(break5);
     displayBreak();
 }
 
 sessionBreak10 = () => {
     defaults.breakTime = 10;
+    highlightBreak(break10);
     displayBreak();
 }
 
 sessionBreak15 = () => {
     defaults.breakTime = 15;
+    highlightBreak(break15);
     displayBreak();
 }
 
+// -- MENU FUNCTIONS --
 goClicked = () => {
     controlBtnStart.disabled = true;
     controlBtnPause.disabled = false;
     controlBtnResume.disabled = true;
     controlBtnReset.disabled = true;
+    // session20.disabled = true;
+    // session30.disabled = true;
+    // session45.disabled = true;
+    darkenChoices();
+    noClicksAllowed();
     countdown(defaults.sessionTime);
 }
 
 pauseClicked = () => {
+    if(defaults.sessionOnBreak == 0) {
     controlBtnStart.disabled = true;
     controlBtnPause.disabled = true;
-    controlBtnResume.disabled = false;
+    controlBtnResume.disabled = false; 
     controlBtnReset.disabled = false;
-    pauseCountdown();
+    noClicksAllowed();
+    pauseCountdown(); 
+    }  
 }
 
 resumeClicked = () => {
@@ -295,6 +318,7 @@ resumeClicked = () => {
     controlBtnPause.disabled = false;
     controlBtnResume.disabled = true;
     controlBtnReset.disabled = true;
+    noClicksAllowed();
     resumeCountdown(defaults.storedTime);
 }
 
@@ -303,7 +327,81 @@ resetClicked = () => {
     controlBtnPause.disabled = true;
     controlBtnResume.disabled = true;
     controlBtnReset.disabled = true;
+    allClicksAllowed();
+    brightenChoices();
     resetCountdown();
+}
+
+highlightSession = (target) => {
+    session20.style.backgroundColor = "#ddd";
+    session20.style.border = "";
+    session30.style.backgroundColor = "#ddd";
+    session30.style.border = "";
+    session45.style.backgroundColor = "#ddd";
+    session45.style.border = "";
+    target.style.border = "solid 3px #ffa500"; 
+}
+
+highlightBreak = (target) => {
+    break5.style.backgroundColor = "#ddd";
+    break5.style.border = "";
+    break10.style.backgroundColor = "#ddd";
+    break10.style.border = "";
+    break15.style.backgroundColor = "#ddd";
+    break15.style.border = "";
+    target.style.border = "solid 3px #ffa500";
+}
+
+darkenChoices = () => {
+    session20.style.backgroundColor = "#a9a9a9";
+    session30.style.backgroundColor = "#a9a9a9";
+    session45.style.backgroundColor = "#a9a9a9";
+    break5.style.backgroundColor = "#a9a9a9";
+    break10.style.backgroundColor = "#a9a9a9";
+    break15.style.backgroundColor = "#a9a9a9";
+    increaseSessionBtn.style.backgroundColor = "#a9a9a9";
+    decreaseSessionBtn.style.backgroundColor = "#a9a9a9";
+    increaseBreakBtn.style.backgroundColor = "#a9a9a9";
+    decreaseBreakBtn.style.backgroundColor = "#a9a9a9";
+}
+
+brightenChoices = () => {
+    session20.style.backgroundColor = "#ddd";
+    session30.style.backgroundColor = "#ddd";
+    session45.style.backgroundColor = "#ddd";
+    break5.style.backgroundColor = "#ddd";
+    break10.style.backgroundColor = "#ddd";
+    break15.style.backgroundColor = "#ddd";
+    increaseSessionBtn.style.backgroundColor = "#ddd";
+    decreaseSessionBtn.style.backgroundColor = "#ddd";
+    increaseBreakBtn.style.backgroundColor = "#ddd";
+    decreaseBreakBtn.style.backgroundColor = "#ddd";
+}
+
+noClicksAllowed = () => {
+    session20.style.pointerEvents = "none";
+    session30.style.pointerEvents = "none";
+    session45.style.pointerEvents = "none";
+    break5.style.pointerEvents = "none";
+    break10.style.pointerEvents = "none";
+    break15.style.pointerEvents = "none";
+    increaseSessionBtn.style.pointerEvents = "none";
+    decreaseSessionBtn.style.pointerEvents = "none";
+    increaseBreakBtn.style.pointerEvents = "none";
+    decreaseBreakBtn.style.pointerEvents = "none";
+}
+
+allClicksAllowed = () => {
+    session20.style.pointerEvents = "auto";
+    session30.style.pointerEvents = "auto";
+    session45.style.pointerEvents = "auto";
+    break5.style.pointerEvents = "auto";
+    break10.style.pointerEvents = "auto";
+    break15.style.pointerEvents = "auto";
+    increaseSessionBtn.style.pointerEvents = "auto";
+    decreaseSessionBtn.style.pointerEvents = "auto";
+    increaseBreakBtn.style.pointerEvents = "auto";
+    decreaseBreakBtn.style.pointerEvents = "auto";
 }
 
 
