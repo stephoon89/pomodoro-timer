@@ -68,11 +68,13 @@ decreaseSessionTime = () => {
 
 // Function that STARTS the countdown of the session
 countdown = (seconds) => {
-    
+
     if(defaults.sessionPaused == 0) {
         seconds = defaults.sessionTime;
         const now = Date.now();
         const then = now + seconds * 1000;
+
+        pauseAllowed();
     
         interval = setInterval(() => { 
             secondsLeft = Math.round((then - Date.now()) / 1000);
@@ -101,6 +103,8 @@ countdown = (seconds) => {
         seconds = defaults.storedTime;
         const now = Date.now();
         const then = now + seconds * 1000;
+
+        pauseAllowed();
     
         interval = setInterval(() => { 
             secondsLeft = Math.round((then - Date.now()) / 1000);
@@ -205,7 +209,8 @@ decreaseBreakTime = () => {
 
 breakCountdown = (seconds) => {
     defaults.sessionOnBreak = 1;
-    controlBtnResume.disabled = true;
+    noPauseAllowed();
+
     seconds = defaults.breakTime;
     const now = Date.now();
     const then = now + seconds * 1000;
@@ -303,14 +308,12 @@ goClicked = () => {
 }
 
 pauseClicked = () => {
-    if(defaults.sessionOnBreak == 0) {
     controlBtnStart.disabled = true;
     controlBtnPause.disabled = true;
     controlBtnResume.disabled = false; 
     controlBtnReset.disabled = false;
     noClicksAllowed();
-    pauseCountdown(); 
-    }  
+    pauseCountdown();   
 }
 
 resumeClicked = () => {
@@ -404,6 +407,13 @@ allClicksAllowed = () => {
     decreaseBreakBtn.style.pointerEvents = "auto";
 }
 
+noPauseAllowed = () => {
+    controlBtnPause.disabled = true;
+}
+
+pauseAllowed = () => {
+    controlBtnPause.disabled = false;
+}
 
 // -- ON CLICKS --
 
